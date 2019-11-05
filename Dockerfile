@@ -1,5 +1,4 @@
 FROM openjdk:8-jdk-alpine
-#FROM ubuntu
 
 LABEL maintainer=trellixa@gmail.com
 
@@ -13,17 +12,20 @@ ENV BASE_INSTALL_DIR=/opt \
 
 #Intall custom glibc library needed by the Tunaki Java Wrapper
 RUN set -ex && \
-    apk -U upgrade && \
+    apk --update-cache upgrade && \
     apk --no-cache add bash
 
 ADD ./mule/mule-standalone-${MULE_VERSION}.tar.gz.md5 .
+COPY ./mule ${BASE_INSTALL_DIR}/mule-standalone-${MULE_VERSION}/
+
 # Download and install mule-standalone
 RUN set -ex && \
-    wget ${MULE_REPOSITORY}/org/mule/distributions/mule-standalone/${MULE_VERSION}/mule-standalone-${MULE_VERSION}.tar.gz && \
-    echo "`cat ./mule-standalone-${MULE_VERSION}.tar.gz.md5`  mule-standalone-${MULE_VERSION}.tar.gz" | md5sum -c && \ 
-    tar -xzf mule-standalone-${MULE_VERSION}.tar.gz -C ${BASE_INSTALL_DIR} && \ 
-    rm mule-standalone-${MULE_VERSION}.tar.gz mule-standalone-${MULE_VERSION}.tar.gz.md5 && \ 
-    ln -s ${BASE_INSTALL_DIR}/mule-standalone-${MULE_VERSION} ${MULE_HOME}
+    wget -q ${MULE_REPOSITORY}/org/mule/distributions/mule-standalone/${MULE_VERSION}/mule-standalone-${MULE_VERSION}.tar.gz && \
+    echo "`cat ./mule-standalone-${MULE_VERSION}.tar.gz.md5`  mule-standalone-${MULE_VERSION}.tar.gz" | md5sum -c && \
+    tar -xzf mule-standalone-${MULE_VERSION}.tar.gz -C ${BASE_INSTALL_DIR} && \
+    ln -s ${BASE_INSTALL_DIR}/mule-standalone-${MULE_VERSION} ${MULE_HOME}  && \
+    rm mule-standalone-${MULE_VERSION}.tar.gz mule-standalone-${MULE_VERSION}.tar.gz.md5  ${MULE_HOME}/mule-standalone-${MULE_VERSION}.tar.gz.md5 && \
+    rm -rf ${MULE_HOME}/lib/launcher ${MULE_HOME}/lib/boot/exec ${MULE_HOME}/lib/boot/libwrapper-* ${MULE_HOME}/lib/boot/wrapper-windows-x86-32.dll 	
     
 # Create Mule group and user
 RUN addgroup -S ${MULE_USER} && adduser -S -g "Mule runtime user" ${MULE_USER} -G ${MULE_USER} && \
@@ -42,8 +44,5 @@ WORKDIR ${MULE_HOME}
 EXPOSE 8081
 
 # Run mule in console mode (needed by Docker)
-#ENTRYPOINT ["./bin/mule"]
+ENTRYPOINT ["./bin/mule-container"]
 #CMD [""]
-
-# Run mule in console mode (needed by Docker)
-CMD [ "/bin/bash" ]
