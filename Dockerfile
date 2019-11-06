@@ -4,6 +4,7 @@ LABEL maintainer=trellixa@gmail.com
 
 # Define environment variables.
 ENV BASE_INSTALL_DIR=/opt \
+   MULE_BASE=/opt/mule \
    MULE_HOME=/opt/mule \
    MULE_REPOSITORY=https://repository-master.mulesoft.org/nexus/content/repositories/releases \
    MULE_USER=mule \
@@ -45,4 +46,4 @@ EXPOSE 8081
 
 # Run mule in console mode (needed by Docker)
 ENTRYPOINT ["./bin/mule-container"]
-#CMD [""]
+CMD [""]
