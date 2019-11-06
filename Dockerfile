@@ -30,6 +30,8 @@ RUN set -ex && \
     wget -q ${MULE_REPOSITORY}/org/mule/distributions/mule-standalone/${MULE_VERSION}/mule-standalone-${MULE_VERSION}.tar.gz && \
     echo "`cat ${BASE_INSTALL_DIR}/mule-standalone-${MULE_VERSION}/mule-standalone-${MULE_VERSION}.tar.gz.md5`  mule-standalone-${MULE_VERSION}.tar.gz" | md5sum -c && \
     tar -xzf mule-standalone-${MULE_VERSION}.tar.gz -C ${BASE_INSTALL_DIR} && \
+    mv ${MULE_HOME}/conf/log4j2.xml ${MULE_HOME}/conf/log4j2.xml.default && \
+    mv ${MULE_HOME}/conf/mule-container-log4j2.xml ${MULE_HOME}/conf/log4j2.xml && \
     rm mule-standalone-${MULE_VERSION}.tar.gz ${MULE_HOME}/mule-standalone-${MULE_VERSION}.tar.gz.md5 && \
     rm -rf ${MULE_HOME}/lib/launcher ${MULE_HOME}/lib/boot/exec ${MULE_HOME}/lib/boot/libwrapper-* ${MULE_HOME}/lib/boot/wrapper-windows-x86-32.dll   
 

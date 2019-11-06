@@ -1,9 +1,21 @@
 #! /bin/sh
 
-# JAVA Options
-JAVA_OPTS="-Djava.library.path=$LD_LIBRARY_PATH:/opt/mule/lib/boot -Dlog4j.configurationFile=$MULE_HOME/conf/log4j2.xml -cp lib/mule/*:lib/opt/*:lib/boot/*"
+# Set Mule Application name
+if [ "$MULE_APP" = "" ]
+then
+    MULE_APP="mule"
+fi
+export MULE_APP
+if [ "$MULE_APP_LONG" = "" ]
+then
+    MULE_APP_LONG="Mule container"
+fi
+export MULE_APP_LONG
 
-# Process Java addtional options from wrapper.conf
+# JAVA Options
+JAVA_OPTS="-Djava.library.path=$LD_LIBRARY_PATH:/opt/mule/lib/boot -cp lib/mule/*:lib/opt/*:lib/boot/*:conf"
+
+# Process Java additional options from wrapper.conf
 JAVA_ADDITIONAL_OPTS=`grep '^wrapper.java.additional.[0-9]\{1,2\}=' $MULE_HOME/conf/wrapper.conf | \
                         sed "s:\"%MULE_HOME%\":$MULE_HOME:" | sed "s:\"%MULE_BASE%\":$MULE_BASE:" | sed -e 's/^wrapper.java.additional.[0-9]\{1,2\}=//' | tr '\n' ' '`
 
@@ -13,4 +25,5 @@ MULE_OPTS=`cat $MULE_HOME/conf/mule-container.conf | tr '\n' ' '`
 # Mule Container class
 JAVA_MAIN=org.mule.runtime.module.launcher.MuleContainer
 
-java $JAVA_OPTS $JAVA_ADDITIONAL_OPTS $MULE_OPTS $JAVA_MAIN 
+echo "Starting $MULE_APP_LONG..."
+java $JAVA_OPTS $JAVA_ADDITIONAL_OPTS $MULE_OPTS $@ $JAVA_MAIN 
