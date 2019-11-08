@@ -26,4 +26,4 @@ MULE_OPTS=`cat $MULE_HOME/conf/mule-container.conf | tr '\n' ' '`
 JAVA_MAIN=org.mule.runtime.module.launcher.MuleContainer
 
 echo "Starting $MULE_APP_LONG..."
-java $JAVA_OPTS $JAVA_ADDITIONAL_OPTS $MULE_OPTS $@ $JAVA_MAIN 
+exec java $JAVA_OPTS $JAVA_ADDITIONAL_OPTS $MULE_OPTS $@ $JAVA_MAIN 
