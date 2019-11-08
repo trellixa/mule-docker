@@ -10,10 +10,6 @@ ENV BASE_INSTALL_DIR=/opt \
    MULE_USER=mule \
    MULE_VERSION=4.2.1
 
-
-RUN set -ex && \
-    apk --no-cache add bash
-
 COPY ./mule ${BASE_INSTALL_DIR}/mule-standalone-${MULE_VERSION}/
 
 # Create Mule group and user
