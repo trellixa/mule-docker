@@ -1,6 +1,14 @@
-FROM openjdk:8-jdk-alpine
+FROM adoptopenjdk/openjdk8:jdk8u232-b09-alpine AS javabuild
+
+FROM adoptopenjdk/openjdk8:jdk8u232-b09-alpine-slim
+
 
 LABEL maintainer=trellixa@gmail.com
+
+# Fix OpenJDK missing jjs engine needed by Mule
+COPY --from=javabuild /opt/java/openjdk/jre/bin/jjs /opt/java/openjdk/jre/bin/
+COPY --from=javabuild /opt/java/openjdk/jre/lib/ext/nashorn.jar /opt/java/openjdk/jre/lib/ext/nashorn.jar
+COPY --from=javabuild /opt/java/openjdk/jre/lib/amd64/jli/libjli.so /opt/java/openjdk/jre/lib/amd64/jli/ 
 
 # Define environment variables.
 ENV BASE_INSTALL_DIR=/opt \
