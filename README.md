@@ -1,5 +1,5 @@
 # mule-docker
-Docker image of **Mule Runtime Engine Community Edition** (aka Kernel) 4 intended to implement microservices and REST APIs with Mule.
+Docker image of **Mule Runtime Engine Community Edition** (aka Kernel) 4 (current version is 4.2.1) intended to implement microservices and REST APIs with Mule.
 
 
 # Quick reference
@@ -23,10 +23,9 @@ and/or Istio, Service Mesh, or similar technologies.
 
 ## JDK version and Linux distro
 
-Mule Runtime requires JDK 8 and since version 4.2.0, is also supporting JDK 11. This image is based on OpenJDK 8 using [AdoptOpenJDK/openjdk8](https://hub.docker.com/r/adoptopenjdk/openjdk8) Docker image. Support for JDK 11 is coming in a future version. 
+Mule Runtime requires JDK 8 and since version 4.2.0, is also supporting JDK 11. Support for JDK 11 is coming in a future version. 
 
-Also, currently supporting Linux Alpine since it is a very popular and small Docker base image but plan to support Ubuntu 18.04 too in a future update.
-Alpine is not officially supported by Mulesoft but Ubuntu is supported. See: [Software requirements](https://docs.mulesoft.com/release-notes/studio/anypoint-studio-7.3-with-4.2-runtime-update-site-5-release-notes#software-requirements)
+Currently, two Linux distros are supported: Ubuntu Bionic (18.04), and Alpine. See the image section for further details. 
 
 
 ## JVM Memory limits and Docker Container support
@@ -55,7 +54,7 @@ The Mule Container is started using these options for the heap:
 The image exposes a single port, **port 8081**, for Mule Applications to use.
 
 
-## Image volumes defined
+## Volumes
 
 Four volumes are defined in the image to allow easy installation and configuration of your Mule apps: **logs, conf, apps, domains**.
 
@@ -80,6 +79,24 @@ On the other hand, Tanuki Wrapper depends on GNU glibc library which is normally
 Finally, to facilitate the migration of any existing Mule deployment that you might have, the **wrapper.conf** file is still processed and all
 the Java parameters `wrapper.java.additional.*` are used when launching the JVM with MuleContainer.
 
+# Images
+
+There are tree types of images supported, all with the same Mule Runtime version 4.2.1 and OpenJDK 8 (HotSpot) version:
+
+|Image                     | Tag                         | Description                                      |
+|--------------------------|-----------------------------|--------------------------------------------------|
+|Official AdoptOpenJDK     | latest, 4.2.1, 4.2.1-bionic | Image based on Docker Official [AdoptOpenJDK](https://hub.docker.com/_/adoptopenjdk) image                       |
+|AdoptOpenJDK Ubuntu slim  | 4.2.1-ubuntu-slim           | Image based on [AdoptOpenJDK/openjdk8](https://hub.docker.com/r/adoptopenjdk/openjdk8) Ubuntu slim image  |
+|AdoptOpenJDK Alpine slim  | 4.2.1-alpine-slim           | Image based on [AdoptOpenJDK/openjdk8](https://hub.docker.com/r/adoptopenjdk/openjdk8) Alpine slim image  |
+
+
+---
+**Note:** Alpine is not officially supported by Mulesoft but Ubuntu 18.04 is supported. See: [Software requirements](https://docs.mulesoft.com/release-notes/studio/anypoint-studio-7.3-with-4.2-runtime-update-site-5-release-notes#software-requirements)
+
+---
+
+
+
 
 # How to use this image
 
@@ -92,6 +109,27 @@ the Java parameters `wrapper.java.additional.*` are used when launching the JVM 
 	```
 
 	This will create a new container named *mymule-service* with 1GB of memory for the container mapped to port 8081.
+
+    1. **Starting a container based on Linux Alpine slim image**
+
+		To start a new container with alpine-slim image, run:
+
+		```console
+		docker run --rm -m 1g --name mymule-service -p 8081:8081 trellixa/mule:4.2.1-alpine-slim
+		```
+
+		This will create a new container named *mymule-service* with 1GB of memory for the container mapped to port 8081 based on Linux Alpine and OpenJDK slim version. Image size is ~254MB.
+
+    2. **Starting a container based on Ubuntu slim image**
+
+		To start a new container with ubuntu-slim image, run:
+
+		```console
+		docker run --rm -m 1g --name mymule-service -p 8081:8081 trellixa/mule:4.2.1-ubuntu-slim
+		```
+
+		This will create a new container named *mymule-service* with 1GB of memory for the container mapped to port 8081 based on Ubuntu and OpenJDK slim version. Image size is ~354MB. Ie. 100MB bigger than Alpine image but smaller by ~100MB with respect to the default Ubuntu image.
+
 
 2. **Deploying a Mule App**
 
